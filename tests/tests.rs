@@ -65,7 +65,7 @@ fn replace_false() {
     s.new_vars(2);
     s.add_clause(&vec![new_lit(0, false), new_lit(1, true)]); //a V -b
     s.add_clause(&vec![new_lit(0, true), new_lit(1, false)]); //-a V b
-    // a == b
+                                                              // a == b
 
     let mut assumps = Vec::new();
     assumps.push(new_lit(0, false));

@@ -11,24 +11,27 @@ extern crate cmake;
 use cmake::Config;
 
 fn main() {
-  let dst = Config::new("cryptominisat")
-                   .define("CMAKE_BUILD_TYPE", "Release")
-                   .define("STATICCOMPILE", "ON")
-                   .define("ENABLE_PYTHON_INTERFACE", "OFF")
-                   .define("ONLY_SIMPLE", "ON")
-                   .define("NOZLIB", "ON")
-                   .define("NOM4RI", "ON")
-                   .define("STATS", "OFF")
-                   .define("NOVALGRIND", "ON")
-                   .define("ENABLE_TESTING", "OFF")
-                   .build();
-  //println!("cargo:rustc-flags=-L {}/lib", dst.display());
-  println!("cargo:rustc-link-search=native={}/lib", dst.display());
-  println!("cargo:rustc-link-lib=static=cryptominisat5");
-  
-  #[cfg(target_os = "macos")]
-  println!("cargo:rustc-flags=-l dylib=c++");
-  
-  #[cfg(not(target_os = "macos"))]
-  println!("cargo:rustc-flags=-l dylib=stdc++");
+    let mut cfg = Config::new("cryptominisat");
+    cfg.define("CMAKE_BUILD_TYPE", "Release")
+        .define("STATICCOMPILE", "ON")
+        .define("ENABLE_PYTHON_INTERFACE", "OFF")
+        .define("ONLY_SIMPLE", "ON")
+        .define("NOZLIB", "ON")
+        .define("NOM4RI", "ON")
+        .define("STATS", "OFF")
+        .define("NOVALGRIND", "ON")
+        .define("ENABLE_TESTING", "OFF");
+    if cfg!(largemem) {
+        cfg.define("LARGEMEM", "ON");
+    }
+    let dst = cfg.build();
+    //println!("cargo:rustc-flags=-L {}/lib", dst.display());
+    println!("cargo:rustc-link-search=native={}/lib", dst.display());
+    println!("cargo:rustc-link-lib=static=cryptominisat5");
+
+    #[cfg(target_os = "macos")]
+    println!("cargo:rustc-flags=-l dylib=c++");
+
+    #[cfg(not(target_os = "macos"))]
+    println!("cargo:rustc-flags=-l dylib=stdc++");
 }

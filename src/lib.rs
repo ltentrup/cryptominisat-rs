@@ -54,7 +54,11 @@ pub enum Lbool {
 }
 impl Lbool {
     pub fn from(b: bool) -> Lbool {
-        if b { Lbool::True } else { Lbool::False }
+        if b {
+            Lbool::True
+        } else {
+            Lbool::False
+        }
     }
 }
 
@@ -70,17 +74,19 @@ extern "C" {
     fn cmsat_free(this: *mut SATSolver);
     fn cmsat_nvars(this: *const SATSolver) -> u32;
     fn cmsat_add_clause(this: *mut SATSolver, lits: *const Lit, num_lits: size_t) -> bool;
-    fn cmsat_add_xor_clause(this: *mut SATSolver,
-                            vars: *const u32,
-                            num_vars: size_t,
-                            rhs: bool)
-                            -> bool;
+    fn cmsat_add_xor_clause(
+        this: *mut SATSolver,
+        vars: *const u32,
+        num_vars: size_t,
+        rhs: bool,
+    ) -> bool;
     fn cmsat_new_vars(this: *mut SATSolver, n: size_t);
     fn cmsat_solve(this: *mut SATSolver) -> Lbool;
-    fn cmsat_solve_with_assumptions(this: *mut SATSolver,
-                                    assumptions: *const Lit,
-                                    num_assumptions: size_t)
-                                    -> Lbool;
+    fn cmsat_solve_with_assumptions(
+        this: *mut SATSolver,
+        assumptions: *const Lit,
+        num_assumptions: size_t,
+    ) -> Lbool;
     fn cmsat_get_model(this: *const SATSolver) -> slice_from_c<Lbool>;
     fn cmsat_get_conflict(this: *const SATSolver) -> slice_from_c<Lit>;
     fn cmsat_set_num_threads(this: *mut SATSolver, n: u32);
