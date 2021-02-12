@@ -21,7 +21,8 @@ fn main() {
         .define("STATS", "OFF")
         .define("NOVALGRIND", "ON")
         .define("ENABLE_TESTING", "OFF");
-    if cfg!(largemem) {
+    #[cfg(feature = "largemem")]
+    {
         cfg.define("LARGEMEM", "ON");
     }
     let dst = cfg.build();
