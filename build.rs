@@ -30,9 +30,9 @@ fn main() {
     println!("cargo:rustc-link-search=native={}/lib", dst.display());
     println!("cargo:rustc-link-lib=static=cryptominisat5");
 
-    #[cfg(target_os = "macos")]
+    #[cfg(any(target_os = "macos", target_os = "openbsd"))]
     println!("cargo:rustc-flags=-l dylib=c++");
 
-    #[cfg(not(target_os = "macos"))]
+    #[cfg(target_os = "linux")]
     println!("cargo:rustc-flags=-l dylib=stdc++");
 }
