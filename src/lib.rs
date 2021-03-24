@@ -14,10 +14,11 @@ use std::slice;
 pub const MAX_NUM_VARS: size_t = (1 << 28) - 1;
 
 // cryptominisat types
+#[derive(Debug)]
 enum SATSolver {} // opaque pointer
 
 #[repr(C)]
-#[derive(PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
 pub struct Lit(u32);
 impl Lit {
     /// Returns None if var >= 1 << 31, but you should not rely on var >= MAX_NUM_VARS
@@ -46,7 +47,7 @@ impl std::ops::Not for Lit {
 }
 
 #[repr(u8)]
-#[derive(PartialEq, Eq, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum Lbool {
     True = 0,
     False = 1,
@@ -92,12 +93,15 @@ extern "C" {
     fn cmsat_set_num_threads(this: *mut SATSolver, n: u32);
 }
 
+#[derive(Debug)]
 pub struct Solver(*mut SATSolver);
 impl Drop for Solver {
     fn drop(&mut self) {
         unsafe { cmsat_free(self.0) };
     }
 }
+unsafe impl Send for Solver {}
+unsafe impl Sync for Solver {}
 impl Solver {
     /// Create new solver instance
     pub fn new() -> Solver {
